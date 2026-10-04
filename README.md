@@ -34,16 +34,17 @@ Function-hook plugins (mods) are early access in Claude Code, so you need a rece
 
 ## Sounds
 
-Out of the box it plays soundalike radio calls bundled in `sounds/`. They were made for this repo with [Kokoro](https://huggingface.co/hexgrad/Kokoro-82M) (Apache-2.0) text-to-speech plus a radio filter, so they're free to redistribute. Regenerate them with `uv run scripts/make-sounds.py` (see the script header).
+Claude Counter-Strike looks for sounds in this order:
 
-For the real thing, it reads Valve's original wavs from your own Counter-Strike 1.6 install (they're not in this repo), checking the usual Steam folders:
+1. **Valve's originals** from your own Counter-Strike 1.6 install (they're not in this repo). It checks the usual Steam folders:
+   - macOS: `~/Library/Application Support/Steam/steamapps/common/Half-Life/cstrike/sound/radio`
+   - Linux: `~/.steam/steam/...` or `~/.local/share/Steam/...` (same path from `steamapps` on)
 
-- macOS: `~/Library/Application Support/Steam/steamapps/common/Half-Life/cstrike/sound/radio`
-- Linux: `~/.steam/steam/...` or `~/.local/share/Steam/...` (same path from `steamapps` on)
+   If yours is somewhere else, set **CS 1.6 radio folder** in `/config` to the `cstrike/sound/radio` folder.
+2. **Bundled soundalikes** in `sounds/`, used when no install is found. They were made for this repo with [Kokoro](https://huggingface.co/hexgrad/Kokoro-82M) (Apache-2.0) text-to-speech plus a radio filter, so they're free to redistribute. Regenerate them with `uv run scripts/make-sounds.py` (see the script header).
+3. **Your system voice**, if a clip can't play.
 
-If yours is somewhere else, set **CS 1.6 radio folder** in `/config` to the `cstrike/sound/radio` folder.
-
-Clip playback uses `afplay`, so wavs only play on macOS for now. If a clip can't play, it speaks the call with your system voice.
+Clip playback uses `afplay`, so wavs only play on macOS for now.
 
 ## Commands
 
