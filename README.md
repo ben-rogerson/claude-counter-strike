@@ -44,7 +44,13 @@ Claude Counter-Strike looks for sounds in this order:
 2. **Bundled soundalikes** in `sounds/`, used when no install is found. They were made for this repo with [Kokoro](https://huggingface.co/hexgrad/Kokoro-82M) (Apache-2.0) text-to-speech plus a radio filter, so they're free to redistribute. Regenerate them with `uv run scripts/make-sounds.py` (see the script header).
 3. **Your system voice**, if a clip can't play.
 
-Clip playback uses `afplay`, so wavs only play on macOS for now.
+Clips play on:
+
+- macOS: built in (`afplay`)
+- Linux: the first of `paplay`, `pw-play` or `aplay` it finds
+- Windows: PowerShell's `SoundPlayer`. It also checks `C:/Program Files (x86)/Steam/...` for a CS 1.6 install
+
+Linux and Windows support is new and only covered by tests so far. If it doesn't play for you, please [open an issue](https://github.com/ben-rogerson/claude-counter-strike/issues).
 
 ## Commands
 
