@@ -17,7 +17,7 @@ A deploy is any command Claude runs that looks like one: `pnpm/npm/yarn/bun run 
 ## Install
 
 ```
-/plugin marketplace add ben-rogerson/cs-radio
+/plugin marketplace add ben-rogerson/claude-counter-strike
 /plugin install cs-radio@cs-radio
 ```
 
