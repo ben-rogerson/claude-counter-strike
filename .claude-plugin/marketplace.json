@@ -1,0 +1,15 @@
+{
+  "name": "cs-radio",
+  "description": "Counter-Strike 1.6 radio calls for Claude Code",
+  "owner": {
+    "name": "Ben Rogerson",
+    "url": "https://benrogerson.dev"
+  },
+  "plugins": [
+    {
+      "name": "cs-radio",
+      "source": "./",
+      "description": "Counter-Strike 1.6 radio calls for Claude Code events"
+    }
+  ]
+}

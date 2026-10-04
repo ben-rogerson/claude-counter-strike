@@ -1,0 +1,22 @@
+{
+  "name": "cs-radio",
+  "version": "0.1.0",
+  "description": "Counter-Strike 1.6 radio calls for Claude Code: 'Fire in the hole' on deploys, 'Bomb has been defused' when a long turn lands. /radio to toggle.",
+  "author": { "name": "Ben Rogerson", "url": "https://benrogerson.dev" },
+  "license": "MIT",
+  "keywords": ["sounds", "fun", "counter-strike", "notifications"],
+  "userConfig": {
+    "soundDir": {
+      "type": "string",
+      "title": "CS 1.6 radio folder",
+      "description": "Path to cstrike/sound/radio from your own Counter-Strike 1.6 install. Empty: look in the usual Steam folders, else speak the calls.",
+      "default": ""
+    },
+    "longTurnSeconds": {
+      "type": "number",
+      "title": "Long turn (seconds)",
+      "description": "A turn at least this long plays 'Bomb has been defused' when it finishes.",
+      "default": 45
+    }
+  }
+}
