@@ -10,8 +10,9 @@ import type { EngineInterface, Register } from 'claude-code'
 //   deploy starts         "Fire in the hole"        ct_fireinhole.wav
 //   deploy ok / failed    "Counter-Terrorists win"  ctwin.wav / terwin.wav
 //
-// The wavs are Valve's, so none ship here: they're read from your own CS 1.6 install
-// (soundDir option, else the usual Steam folders). Without them the calls are spoken.
+// Valve's wavs can't ship here, so they're read from your own CS 1.6 install (soundDir
+// option, else the usual Steam folders). Without them it plays the soundalikes in sounds/
+// (scripts/make-sounds.py), and speaks the call if those can't play.
 
 const CALLS = {
   locknload: 'Locked and loaded',
@@ -53,7 +54,10 @@ async function isOn($: EngineInterface) {
 async function play($: EngineInterface, call: Call) {
   if (!(await isOn($))) return
   const fail = (err: unknown) => $.ui.log(`cs-radio: ${err}`, { to: 'debug' })
-  if (!soundDir) return void $.audio.speak(CALLS[call]).catch(fail)
+  const speak = () => void $.audio.speak(CALLS[call]).catch(fail)
+  if (!soundDir) {
+    return void $.audio.play({ asset: `sounds/${call}.wav` }).catch(err => (fail(err), speak()))
+  }
   try {
     let base64 = clips.get(call)
     if (!base64) {
@@ -64,7 +68,7 @@ async function play($: EngineInterface, call: Call) {
     void $.audio.play({ base64, mime: 'audio/wav' }).catch(fail)
   } catch (err) {
     fail(err)
-    void $.audio.speak(CALLS[call]).catch(fail)
+    speak()
   }
 }
 
@@ -85,7 +89,7 @@ export const register: Register = (on, options) => {
 
   on('command.run', { command: 'radio' }, async ($, e) => {
     const arg = e.args.trim().toLowerCase()
-    const source = soundDir ? `wavs from ${soundDir}` : 'spoken (no CS 1.6 radio folder found, set soundDir in /config)'
+    const source = soundDir ? `wavs from ${soundDir}` : 'the bundled soundalikes (no CS 1.6 radio folder found, set soundDir in /config)'
     if (arg === 'test') {
       if (!(await isOn($))) return { text: 'Radio is off - /radio on first.' }
       await play($, 'ctwin')

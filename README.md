@@ -34,16 +34,16 @@ Function-hook plugins (mods) are early access in Claude Code, so you need a rece
 
 ## Sounds
 
-The radio wavs belong to Valve, so this repo doesn't include them. Claude Counter-Strike reads them from your own Counter-Strike 1.6 install, checking the usual Steam folders:
+Out of the box it plays soundalike radio calls bundled in `sounds/`. They were made for this repo with [Kokoro](https://huggingface.co/hexgrad/Kokoro-82M) (Apache-2.0) text-to-speech plus a radio filter, so they're free to redistribute. Regenerate them with `uv run scripts/make-sounds.py` (see the script header).
+
+For the real thing, it reads Valve's original wavs from your own Counter-Strike 1.6 install (they're not in this repo), checking the usual Steam folders:
 
 - macOS: `~/Library/Application Support/Steam/steamapps/common/Half-Life/cstrike/sound/radio`
 - Linux: `~/.steam/steam/...` or `~/.local/share/Steam/...` (same path from `steamapps` on)
 
 If yours is somewhere else, set **CS 1.6 radio folder** in `/config` to the `cstrike/sound/radio` folder.
 
-No install? It speaks the calls with your system voice instead, which is honestly still pretty good.
-
-Clip playback uses `afplay`, so wavs only play on macOS for now.
+Clip playback uses `afplay`, so wavs only play on macOS for now. If a clip can't play, it speaks the call with your system voice.
 
 ## Commands
 
@@ -66,4 +66,4 @@ claude plugin test .
 
 ## License
 
-MIT for the code. Counter-Strike and its sounds are Valve's.
+MIT for the code and the bundled soundalikes. Counter-Strike and its original sounds are Valve's.

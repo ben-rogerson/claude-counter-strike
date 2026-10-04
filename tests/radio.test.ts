@@ -1,7 +1,7 @@
 import { expect, test } from 'claude-code/testing'
 import type { On } from 'claude-code'
 
-function setup(on: On, hasWavs: boolean) {
+function setup(on: On, hasWavs: boolean, assetsPlay = true) {
   const played: string[] = []
   const spoken: string[] = []
   const store = new Map<string, unknown>()
@@ -14,7 +14,11 @@ function setup(on: On, hasWavs: boolean) {
   on('store.set', (_$, e) => (store.set(e.key, e.value), { value: undefined }))
   on('ui.log', () => ({ value: undefined }))
   on('audio.play', (_$, e) => {
-    if ('base64' in e.clip && e.clip.base64) played.push(atob(e.clip.base64))
+    if (e.clip.asset !== undefined) {
+      if (!assetsPlay) throw new Error('no player')
+      played.push(e.clip.asset)
+    }
+    if (e.clip.base64) played.push(atob(e.clip.base64))
     return { value: undefined }
   })
   on('audio.speak', (_$, e) => (spoken.push(e.text), { value: { via: 'system' as const } }))
@@ -43,8 +47,15 @@ test('plays wavs from the configured folder and /radio toggles them', { options:
   expect(played).toContain('/home/me/cs/radio/locknload.wav')
 })
 
-test('speaks the calls when no CS install is found', async ($, on) => {
+test('plays the bundled soundalikes when no CS install is found', async ($, on) => {
   const { played, spoken } = setup(on, false)
+  await $.session.start(start)
+  expect(played).toEqual(['sounds/locknload.wav'])
+  expect(spoken).toHaveLength(0)
+})
+
+test('speaks the calls when the bundled clips cannot play', async ($, on) => {
+  const { played, spoken } = setup(on, false, false)
   await $.session.start(start)
   expect(played).toHaveLength(0)
   expect(spoken).toContain('Locked and loaded')
