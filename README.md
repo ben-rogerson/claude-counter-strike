@@ -1,4 +1,4 @@
-# cs-radio
+# Claude Counter-Strike
 
 Counter-Strike 1.6 radio calls for [Claude Code](https://claude.com/claude-code).
 
@@ -25,7 +25,7 @@ Function-hook plugins (mods) are early access in Claude Code, so you need a rece
 
 ## Sounds
 
-The radio wavs belong to Valve, so this repo doesn't include them. cs-radio reads them from your own Counter-Strike 1.6 install, checking the usual Steam folders:
+The radio wavs belong to Valve, so this repo doesn't include them. Claude Counter-Strike reads them from your own Counter-Strike 1.6 install, checking the usual Steam folders:
 
 - macOS: `~/Library/Application Support/Steam/steamapps/common/Half-Life/cstrike/sound/radio`
 - Linux: `~/.steam/steam/...` or `~/.local/share/Steam/...` (same path from `steamapps` on)
