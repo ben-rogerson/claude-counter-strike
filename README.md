@@ -16,9 +16,18 @@ A deploy is any command Claude runs that looks like one: `pnpm/npm/yarn/bun run 
 
 ## Install
 
+In Claude Code:
+
 ```
 /plugin marketplace add ben-rogerson/claude-counter-strike
 /plugin install cs-radio@cs-radio
+```
+
+Or from your terminal:
+
+```
+claude plugin marketplace add ben-rogerson/claude-counter-strike
+claude plugin install cs-radio@cs-radio
 ```
 
 Function-hook plugins (mods) are early access in Claude Code, so you need a recent build.
