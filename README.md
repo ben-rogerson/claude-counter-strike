@@ -68,3 +68,5 @@ claude plugin test .
 ## License
 
 MIT for the code and the bundled soundalikes. Counter-Strike and its original sounds are Valve's.
+
+Want something quieter? Try [Claude Arcade](https://github.com/ben-rogerson/claude-arcade) - 8-bit end-of-turn sounds.
