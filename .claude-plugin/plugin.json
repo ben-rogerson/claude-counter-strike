@@ -1,7 +1,7 @@
 {
   "name": "cs-radio",
   "version": "0.1.0",
-  "description": "Counter-Strike 1.6 radio calls for Claude Code: 'Fire in the hole' on deploys, 'Bomb has been defused' when a long turn lands. /radio to toggle.",
+  "description": "Counter-Strike 1.6 radio calls for Claude Code: 'Fire in the hole' on deploys, 'Bomb has been defused' when a long turn lands. /csradio to toggle.",
   "author": { "name": "Ben Rogerson", "url": "https://benrogerson.dev" },
   "license": "MIT",
   "keywords": ["sounds", "fun", "counter-strike", "notifications"],

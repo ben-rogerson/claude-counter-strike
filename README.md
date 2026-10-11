@@ -54,9 +54,9 @@ Linux and Windows support is new and only covered by tests so far. If it doesn't
 
 ## Commands
 
-- `/radio` - toggle on/off (remembered across sessions)
-- `/radio on` / `/radio off`
-- `/radio test` - plays "Counter-Terrorists win" and tells you where the sounds come from
+- `/csradio` - toggle on/off (remembered across sessions)
+- `/csradio on` / `/csradio off`
+- `/csradio test` - plays "Counter-Terrorists win" and tells you where the sounds come from
 
 ## Options (`/config`)
 

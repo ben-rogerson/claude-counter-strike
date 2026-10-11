@@ -4,7 +4,7 @@ import type { On } from 'claude-code'
 // the test runtime has timers; the hooks lib types don't declare them
 declare function setTimeout(fn: () => void, ms: number): unknown
 
-type Platform = { os: 'Darwin' | 'Linux' | 'Windows'; players?: string[]; failingPlayer?: string }
+type Platform = { os: 'Darwin' | 'Linux' | 'Windows'; players?: string[]; failingPlayer?: string; refuseCommand?: boolean }
 
 function setup(on: On, hasWavs: boolean, platform: Platform = { os: 'Darwin' }, assetsPlay = true) {
   const played: string[] = []
@@ -14,7 +14,10 @@ function setup(on: On, hasWavs: boolean, platform: Platform = { os: 'Darwin' }, 
   const env: Record<string, string> = { HOME: '/home/me' }
   if (platform.os === 'Windows') env.OS = 'Windows_NT'
   on('session.start', (_$, e) => ({ cwd: e.cwd }))
-  on('command.register', (_$, e) => ({ value: { command: e.name } }))
+  on('command.register', (_$, e) => {
+    if (platform.refuseCommand) throw new Error(`"/${e.name}" refused: it is a built-in`)
+    return { value: { command: e.name } }
+  })
   on('env.get', (_$, e) => ({ value: env[e.name] }))
   on('fs.exists', () => ({ value: hasWavs }))
   on('fs.read', (_$, e) => ({ value: { base64: btoa(e.path) } }))
@@ -51,7 +54,7 @@ function setup(on: On, hasWavs: boolean, platform: Platform = { os: 'Darwin' }, 
 
 const start = { cwd: '/repo', surface: 'terminal', isInteractive: true } as const
 const radio = (args: string) => ({
-  command: 'radio',
+  command: 'csradio',
   args,
   origin: { kind: 'composer' as const },
   presentation: { isFullscreen: true, columns: 120 },
@@ -59,7 +62,7 @@ const radio = (args: string) => ({
 // lets a clip's fire-and-forget playback (and any fallback) finish
 const settle = () => new Promise<void>(resolve => setTimeout(resolve, 0))
 
-test('plays wavs from the configured folder and /radio toggles them', { options: { soundDir: '~/cs/radio' } }, async ($, on) => {
+test('plays wavs from the configured folder and /csradio toggles them', { options: { soundDir: '~/cs/radio' } }, async ($, on) => {
   const { played } = setup(on, true)
   await $.session.start(start)
   expect(played).toContain('/home/me/cs/radio/locknload.wav')
@@ -130,4 +133,10 @@ test('plays clips on Windows through PowerShell', { options: { soundDir: "C:/Gam
     'powershell', '-NoProfile', '-NonInteractive', '-Command',
     "(New-Object Media.SoundPlayer 'C:/Games/it''s cs/radio/locknload.wav').PlaySync()",
   ])
+})
+
+test('still plays the session start call when the command name is refused', async ($, on) => {
+  const { played } = setup(on, false, { os: 'Darwin', refuseCommand: true })
+  await $.session.start(start)
+  expect(played).toEqual(['sounds/locknload.wav'])
 })
