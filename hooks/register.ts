@@ -1,6 +1,6 @@
 import type { EngineInterface, Register } from 'claude-code'
 
-// Counter-Strike 1.6 radio calls for Claude Code events. /radio [on|off|test] toggles,
+// Counter-Strike 1.6 radio calls for Claude Code events. /csradio [on|off|test] toggles,
 // kept across sessions.
 //
 //   session start         "Locked and loaded"       locknload.wav
@@ -35,6 +35,9 @@ const STEAM_RADIO = [
 ]
 const WINDOWS_STEAM_RADIO = 'C:/Program Files (x86)/Steam/steamapps/common/Half-Life/cstrike/sound/radio'
 const LINUX_PLAYERS = ['paplay', 'pw-play', 'aplay']
+
+// not /radio: that's Claude Code's built-in Claude FM, and a built-in's name is refused
+const COMMAND = 'csradio'
 
 const DEPLOY = /\b(?:pnpm|npm|yarn|bun)\s+(?:run\s+)?deploy\b|\bwrangler\s+deploy\b|\bvercel\s+(?:--prod|deploy)\b|\bfly\s+deploy\b|scripts\/deploy\.sh/
 
@@ -121,17 +124,18 @@ export const register: Register = (on, options) => {
   on('session.start', async ($, e, next) => {
     soundDir = await findSoundDir($, String(options.soundDir ?? ''))
     player = await findPlayer($)
+    // a refused name (a built-in's) shouldn't cost the rest of the session start
     await $.command.register({
-      name: 'radio',
+      name: COMMAND,
       description: 'Toggle Counter-Strike radio calls',
       argumentHint: '[on|off|test]',
       immediate: true,
-    })
+    }).catch(err => $.ui.log(`cs-radio: ${err}`, { to: 'debug' }))
     await play($, 'locknload')
     return next(e)
   })
 
-  on('command.run', { command: 'radio' }, async ($, e) => {
+  on('command.run', { command: COMMAND }, async ($, e) => {
     const arg = e.args.trim().toLowerCase()
     const source = !player
       ? 'your system voice (no audio player found)'
@@ -139,11 +143,11 @@ export const register: Register = (on, options) => {
         ? `wavs from ${soundDir}`
         : 'the bundled soundalikes (no CS 1.6 radio folder found, set soundDir in /config)'
     if (arg === 'test') {
-      if (!(await isOn($))) return { text: 'Radio is off - /radio on first.' }
+      if (!(await isOn($))) return { text: 'Radio is off - /csradio on first.' }
       await play($, 'ctwin')
       return { text: `Radio check: Counter-Terrorists win. Using ${source}.` }
     }
-    if (arg && arg !== 'on' && arg !== 'off') return { text: 'Usage: /radio [on|off|test]' }
+    if (arg && arg !== 'on' && arg !== 'off') return { text: 'Usage: /csradio [on|off|test]' }
     const now = arg ? arg === 'on' : !(await isOn($))
     await $.store.set('enabled', now)
     if (now) await play($, 'locknload')
